@@ -142,3 +142,14 @@ h3 {
 .btn-large:hover {
     background-color: #2980b9;
 }
+/* Add this to the very bottom of your style.css file */
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+    }
+
+    .left-column, .right-column {
+        width: 100%;
+        box-sizing: border-box;
+    }
+}
