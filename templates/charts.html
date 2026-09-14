@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Expense Charts</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <!-- Import Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <h1>Spending by Category</h1>
+    
+    <div style="text-align: center; margin-bottom: 20px;">
+        <a href="/tracker"><button style="background-color: #7f8c8d;">Back to Tracker</button></a>
+    </div>
+
+    <!-- This is the container for the chart -->
+    <div style="max-width: 500px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+        <canvas id="categoryChart"></canvas>
+    </div>
+
+    <script>
+        // Use Jinja to safely pass Python data into Javascript
+        const categories = {{ categories | tojson }};
+        const amounts = {{ amounts | tojson }};
+
+        const ctx = document.getElementById('categoryChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'pie', // Try changing this to 'bar' or 'doughnut' later!
+            data: {
+                labels: categories,
+                datasets: [{
+                    label: 'Total Spent',
+                    data: amounts,
+                    backgroundColor: [
+                        '#3498db', '#e74c3c', '#2ecc71', '#f1c40f', '#9b59b6', '#34495e'
+                    ]
+                }]
+            }
+        });
+    </script>
+</body>
+</html>

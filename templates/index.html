@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Expense Tracker</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <a href="/"><button style="background-color: #7f8c8d;">&larr; Home</button></a>
+        <h1 style="margin: 0; text-align: center; flex-grow: 1;">Personal Expense Tracker</h1>
+    </div>
+    
+    <div class="container">
+        <!-- LEFT COLUMN -->
+        <div class="left-column">
+            
+            <!-- MOVED: Set Budget Form is now on top -->
+            <h2>Set Monthly Budget</h2>
+            <form method="POST" action="/set_budget">
+                <label>Select Month:</label>
+                <input type="month" name="month" required>
+                
+                <label>Budget Limit:</label>
+                <input type="number" step="0.01" name="amount" required>
+                
+                <button type="submit" style="background-color: #8e44ad;">Save Budget</button>
+            </form>
+
+            <hr>
+
+            <!-- MOVED: Add Expense Form is now underneath -->
+            <h2>Add New Expense</h2>
+            <form method="POST" action="/tracker">
+                <label>Amount:</label>
+                <input type="number" step="0.01" name="amount" required>
+                
+                <label>Category:</label>
+                <input type="text" name="category" required>
+                
+                <label>Description:</label>
+                <input type="text" name="description" required>
+                
+                <label>Date:</label>
+                <input type="date" name="date" required>
+                
+                <button type="submit">Add Expense</button>
+            </form>
+        </div>
+
+        <!-- RIGHT COLUMN -->
+        <div class="right-column">
+            <h2>Your Expenses</h2>
+            <ul>
+                {% for expense in expenses %}
+                    <li>
+                        <strong>{{ expense.date }}</strong> | 
+                        {{ expense.category }} - {{ expense.description }}: 
+                        ${{ expense.amount }}
+                        
+                        <a href="/delete/{{ loop.index0 }}">
+                            <button>Delete</button>
+                        </a>
+                    </li>
+                {% else %}
+                    <li>No expenses found yet.</li>
+                {% endfor %}
+            </ul>
+            
+            <div style="margin-bottom: 25px;">
+                <a href="/charts"><button style="background-color: #27ae60; width: 100%;">View Visual Charts</button></a>
+            </div>
+            
+            <h2>Monthly Breakdown</h2>
+            <ul>
+                {% for data in monthly_data %}
+                    <li>
+                        <strong>{{ data.formatted_name }} 
+                        <span style="font-size: 0.8em; color: #7f8c8d;">(Limit: ${{ data.budget }})</span>:
+                        </strong> 
+                        <span {% if data.total > data.budget %}style="color: red; font-weight: bold;"{% endif %}>
+                            ${{ data.total }}
+                        </span>
+                    </li>
+                {% else %}
+                    <li>No monthly data available yet.</li>
+                {% endfor %}
+            </ul>
+
+            <h3>Total Spending: ${{ total }}</h3>
+        </div>
+    </div>
+</body>
+</html>
